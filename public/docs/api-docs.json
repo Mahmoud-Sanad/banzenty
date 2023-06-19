@@ -1,0 +1,1107 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Banzenty",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://banzenty.restart-technology.com/api",
+      "description": " {{DEVELOPMENT SERVER}}",
+      "variables": {}
+    },
+    {
+      "url": "http://localhost/banzenty/public/api",
+      "description": " {{LOCALHOST SERVER}}",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "name",
+                  "phone",
+                  "car_plate_digits",
+                  "car_plate_characters"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "ahmed"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "+201123456789"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "example@site.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "minimum 6 characters",
+                    "example": "123456"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "example": "123456"
+                  },
+                  "social_id": {
+                    "type": "string"
+                  },
+                  "social_type": {
+                    "type": "string"
+                  },
+                  "car_plate_digits": {
+                    "type": "integer",
+                    "description": "1-4 digits",
+                    "example": "156"
+                  },
+                  "car_plate_characters": {
+                    "type": "string",
+                    "description": "2-3 arabic letters",
+                    "example": "نصر"
+                  },
+                  "fcm_token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Verify User's phone",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [
+                  "phone",
+                  "code"
+                ],
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "example": "+201123456789"
+                  },
+                  "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 12345
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/resend-code": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "resend verification code",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [
+                  "phone",
+                  "type"
+                ],
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "example": "+201101234567"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "phone",
+                    "description": "phone or password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "login",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [],
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "description": "used in social login as well, to allow the user to login if registerd with the same phone but different registration type",
+                    "example": "+201123456789"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "required if social id is not present",
+                    "example": "123456"
+                  },
+                  "social_id": {
+                    "type": "string",
+                    "description": "required if password is not present",
+                    "example": "12345674"
+                  },
+                  "social_type": {
+                    "type": "string",
+                    "example": "facebook"
+                  },
+                  "fcm_token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/auth/request-password-reset": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "send reset token",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [
+                  "phone"
+                ],
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "example": "+2012345679"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Resets the password",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [
+                  "token",
+                  "password",
+                  "password_confirmation"
+                ],
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "example": "asdvs123"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "654321"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "example": "654321"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/terms-and-conditions": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "get terms and conditions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "get profile details",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/profile/update": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "update profile",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "ahmed"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "+201123456789"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "example@site.com"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/profile/password/change": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "change password",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [],
+                "type": "object",
+                "properties": {
+                  "password_old": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "password_confirmation": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/profile/notifications": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "get notification list (paginated)",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/profile/unread-notifications-count": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/profile/cars/add": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "add car plate",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "plate_number_digits",
+                  "plate_number_characters"
+                ],
+                "type": "object",
+                "properties": {
+                  "plate_number_digits": {
+                    "type": "integer",
+                    "description": "1-4 digits",
+                    "example": "157"
+                  },
+                  "plate_number_characters": {
+                    "type": "string",
+                    "description": "2-3 arabic letters",
+                    "example": "نصر"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/profile/cars/delete": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "add car plate",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "car_id"
+                ],
+                "type": "object",
+                "properties": {
+                  "car_id": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/profile/cars": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "get car plates list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/profile/requests": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "get my requests",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/stations": {
+      "get": {
+        "tags": [
+          "Stations"
+        ],
+        "summary": "get or search stations",
+        "parameters": [
+          {
+            "name": "service_ids[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "name": "company_ids[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "name": "fuel_ids[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "name": "distance_min",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "distance_max",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "lat",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stations/filters": {
+      "get": {
+        "tags": [
+          "Stations"
+        ],
+        "summary": "get station filters data",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stations/{id}": {
+      "get": {
+        "tags": [
+          "Stations"
+        ],
+        "summary": "get station details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stations/list": {
+      "get": {
+        "tags": [
+          "Stations"
+        ],
+        "summary": "get all stations (name and id)",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/home": {
+      "get": {
+        "tags": [
+          "Home"
+        ],
+        "summary": "get banners, user and latest request",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/contact-us": {
+      "post": {
+        "tags": [
+          "Contact Us"
+        ],
+        "summary": "",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "name",
+                  "email",
+                  "text"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "ahmed"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "example@site.com"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rewards": {
+      "get": {
+        "tags": [
+          "Rewards"
+        ],
+        "summary": "get redeemable rewards",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/rewards/redeem": {
+      "post": {
+        "tags": [
+          "Rewards"
+        ],
+        "summary": "redeem a reward",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "reward_id"
+                ],
+                "type": "object",
+                "properties": {
+                  "reward_id": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/plans": {
+      "get": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "get plans list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/plans/subscribe": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "subscribe",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "plan_id"
+                ],
+                "type": "object",
+                "properties": {
+                  "plan_id": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/plans/renew": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "renew current subscription",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/plans/cancel": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "cancel current subscription",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    },
+    "/plans/my-subscription": {
+      "get": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "get currnt subscription",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "httpBearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "httpBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
